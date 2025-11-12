@@ -1,8 +1,8 @@
 # Security Policy
 
 ## Supported Versions
-We support the latest `main` branch and the most recent tagged release.
+Мы фиксируем только актуальную ветку `main` и последние минорные релизы.
 
 ## Reporting a Vulnerability
-Please email **sh4part@gmail.com** with details. Do **not** open public issues for undisclosed vulnerabilities.
-For leaked secrets: rotate immediately and file an internal incident note.
+Пожалуйста, не создавайте публичные issue. Напишите на **sh4part@gmail.com** с темой `[SECURITY] <репозиторий>` и шагами для воспроизведения.
+Мы подтвердим получение и вернёмся с оценкой/планом фикса.

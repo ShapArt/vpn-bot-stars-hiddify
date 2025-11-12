@@ -1,20 +1,27 @@
-name: Bug report
-description: Report a bug or a regression
-labels: [bug]
+name: "🐞 Bug report"
+description: "Опиши проблему, чтобы мы быстро её починили"
+labels: ["bug"]
 body:
   - type: textarea
+    id: what-happened
     attributes:
-      label: What happened?
-      description: Clear description of the problem
+      label: Что произошло?
+      placeholder: Коротко, по делу
     validations:
       required: true
   - type: textarea
+    id: steps
     attributes:
-      label: Steps to reproduce
+      label: Шаги для воспроизведения
+      placeholder: 1) ... 2) ... 3) ...
     validations:
       required: true
-  - type: textarea
+  - type: input
+    id: version
     attributes:
-      label: Logs / screenshots
-    validations:
-      required: false
+      label: Версия/коммит
+      placeholder: v0.1.0 или SHA
+  - type: textarea
+    id: extra
+    attributes:
+      label: Скрины/логи

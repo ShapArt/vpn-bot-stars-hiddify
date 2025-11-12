@@ -1,0 +1,5 @@
+### Example public health (if exposed)
+GET http://localhost:8080/health
+
+### Metrics (example if enabled)
+GET http://localhost:8080/metrics

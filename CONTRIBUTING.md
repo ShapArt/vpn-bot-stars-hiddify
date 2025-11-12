@@ -1,8 +1,19 @@
 # Contributing
 
-- Use **Conventional Commits** (`feat:`, `fix:`, `docs:`...) and keep PRs small.
-- Run linters/tests locally before pushing.
-- For new features: open an issue first with a short pitch (use the template).
+Спасибо за вклад!
 
-## Dev setup
-See each repo `README.md` for quick start. Python repos use `uv`/`venv` or `pip` and `ruff` for linting.
+## Коммиты
+Используем **Conventional Commits**: `type(scope): summary`
+Примеры: `feat(cli): add --max-side`, `fix: handle empty input`
+
+## Как внести изменения
+1. Форк → ветка `feat/...` или `fix/...`
+2. Тесты/линты должны проходить (CI)
+3. PR с кратким описанием и ссылкой на issue
+
+## Код
+- Python: `ruff` + `black`; тесты — `pytest`
+- Node/Web: `eslint`/`prettier` (если есть), `npm test`
+
+## Лицензия
+Отправляя PR, вы соглашаетесь с лицензией репозитория.
