@@ -1,0 +1,12 @@
+﻿[allowlist]
+description = "Ignore generated artifacts and caches"
+paths = [
+  '''^\.git/''',
+  '''^\.venv/''',
+  '''^node_modules/''',
+  '''^dist/''',
+  '''^build/''',
+  '''^\.ruff_cache/''',
+  '''^\.pytest_cache/''',
+  '''__pycache__/'''
+]
