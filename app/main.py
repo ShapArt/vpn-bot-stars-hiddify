@@ -448,6 +448,7 @@ TEXTS_RU: Dict[str, str] = {
     "guide_title": "📚 *Sh4pArt’s App — Гид*\n",
 }
 
+
 def render_plans_text(lang: str, plans: list) -> str:
     lines = [T(lang, "plans_title"), ""]
     for p in plans:
@@ -588,17 +589,17 @@ def kb_main(_lang: str) -> Dict[str, Any]:
         return {"text": text, "callback_data": data}
 
     rows: List[List[Dict[str, str]]] = [
-        [b("🛒 Купить", "menu:buy"), b("🪪 Профиль", "menu:profile"), b("📚 Гид", "menu:guide")]
+        [
+            b("🛒 Купить", "menu:buy"),
+            b("🪪 Профиль", "menu:profile"),
+            b("📚 Гид", "menu:guide"),
+        ]
     ]
     return {"inline_keyboard": rows}
 
 
 def kb_back() -> Dict[str, Any]:
-    return {
-        "inline_keyboard": [
-            [{"text": "⬅️ Назад", "callback_data": "menu:home"}]
-        ]
-    }
+    return {"inline_keyboard": [[{"text": "⬅️ Назад", "callback_data": "menu:home"}]]}
 
 
 def kb_plans(plans: List[Plan]) -> Dict[str, Any]:
@@ -624,19 +625,27 @@ def kb_plan_actions(p: Plan) -> Dict[str, Any]:
         [{"text": "🔑 Уже есть ключ", "callback_data": "menu:havekey"}],
     ]
     if panel_configured():
-        actions.append([{"text": "➕ Продлить/апгрейдить", "callback_data": "plan:extend"}])
+        actions.append(
+            [{"text": "➕ Продлить/апгрейдить", "callback_data": "plan:extend"}]
+        )
     actions.append([{"text": "⬅️ К тарифам", "callback_data": "menu:buy"}])
     return {"inline_keyboard": actions}
 
 
 def kb_guide_toc() -> Dict[str, Any]:
     rows = [
-        [{"text": "🟢 Android", "callback_data": "guide:post:2"},
-         {"text": "🍏 iOS/iPadOS", "callback_data": "guide:post:3"}],
-        [{"text": "🖥 Desktop/TV", "callback_data": "guide:post:4"},
-         {"text": "💳 Оплата XTR", "callback_data": "guide:post:5"}],
-        [{"text": "🔗 Профиль/Продление", "callback_data": "guide:post:6"},
-         {"text": "🛠 FAQ", "callback_data": "guide:post:7"}],
+        [
+            {"text": "🟢 Android", "callback_data": "guide:post:2"},
+            {"text": "🍏 iOS/iPadOS", "callback_data": "guide:post:3"},
+        ],
+        [
+            {"text": "🖥 Desktop/TV", "callback_data": "guide:post:4"},
+            {"text": "💳 Оплата XTR", "callback_data": "guide:post:5"},
+        ],
+        [
+            {"text": "🔗 Профиль/Продление", "callback_data": "guide:post:6"},
+            {"text": "🛠 FAQ", "callback_data": "guide:post:7"},
+        ],
         [{"text": "🛡 Приватность", "callback_data": "guide:post:8"}],
         [{"text": "⬅️ Главная", "callback_data": "menu:home"}],
     ]
@@ -645,10 +654,12 @@ def kb_guide_toc() -> Dict[str, Any]:
 
 def kb_guide_nav(idx: int) -> Dict[str, Any]:
     next_idx = idx + 1 if idx < 8 else 2
-    rows = [[
-        {"text": "🔙 Оглавление", "callback_data": "menu:guide"},
-        {"text": "▶️ Далее", "callback_data": f"guide:post:{next_idx}"}
-    ]]
+    rows = [
+        [
+            {"text": "🔙 Оглавление", "callback_data": "menu:guide"},
+            {"text": "▶️ Далее", "callback_data": f"guide:post:{next_idx}"},
+        ]
+    ]
     return {"inline_keyboard": rows}
 
 
@@ -922,7 +933,9 @@ async def provision_by_panel_api(
 
     async with httpx.AsyncClient(timeout=_timeout(), limits=_limits()) as cli:
         # 1) Ищем пользователя по telegram_id
-        existing = await _panel_find_user_by_tid(cli, base_admin, headers_admin, telegram_id)
+        existing = await _panel_find_user_by_tid(
+            cli, base_admin, headers_admin, telegram_id
+        )
 
         if existing:
             user_uuid = existing.get("uuid") or existing.get("user_uuid")
@@ -934,7 +947,9 @@ async def provision_by_panel_api(
             old_limit = float(existing.get("usage_limit_GB") or 0.0)
 
             # Продлеваем «от фактического окончания»: если уже истёк — от now
-            _, new_pkg_days, new_expiry = _calc_new_package_days(old_start, old_days, plan.days)
+            _, new_pkg_days, new_expiry = _calc_new_package_days(
+                old_start, old_days, plan.days
+            )
             new_expiry_iso = new_expiry.isoformat()
 
             patch = {
@@ -967,18 +982,30 @@ async def provision_by_panel_api(
             r = await cli.post(url_create, json=payload_create, headers=headers_admin)
             r.raise_for_status()
 
-            user_obj = r.json() if r.headers.get("content-type","").startswith("application/json") else {}
-            user_uuid = (user_obj or {}).get("uuid") or (user_obj or {}).get("user_uuid")
+            user_obj = (
+                r.json()
+                if r.headers.get("content-type", "").startswith("application/json")
+                else {}
+            )
+            user_uuid = (user_obj or {}).get("uuid") or (user_obj or {}).get(
+                "user_uuid"
+            )
             if not user_uuid:
                 raise RuntimeError("panel API create: no uuid in response")
 
             # Вычисляем expires_at
             try:
                 start_s = (user_obj or {}).get("start_date")
-                start_dt = datetime.fromisoformat(start_s) if start_s else datetime.now(timezone.utc)
+                start_dt = (
+                    datetime.fromisoformat(start_s)
+                    if start_s
+                    else datetime.now(timezone.utc)
+                )
                 if start_dt.tzinfo is None:
                     start_dt = start_dt.replace(tzinfo=timezone.utc)
-                expires_at = start_dt + timedelta(days=int((user_obj or {}).get("package_days") or plan.days))
+                expires_at = start_dt + timedelta(
+                    days=int((user_obj or {}).get("package_days") or plan.days)
+                )
             except Exception:
                 expires_at = datetime.now(timezone.utc) + timedelta(days=plan.days)
             new_expiry_iso = expires_at.isoformat()
@@ -989,14 +1016,21 @@ async def provision_by_panel_api(
 
         if not HIDDIFY_FORCE_LONG_SUB:
             user_headers = {"Hiddify-API-Key": user_uuid}
-            r2 = await cli.get(f"{base_user}/{user_uuid}/api/v2/user/short/", headers=user_headers)
-            if r2.status_code == 200 and r2.headers.get("content-type", "").startswith("application/json"):
+            r2 = await cli.get(
+                f"{base_user}/{user_uuid}/api/v2/user/short/", headers=user_headers
+            )
+            if r2.status_code == 200 and r2.headers.get("content-type", "").startswith(
+                "application/json"
+            ):
                 sj = r2.json() or {}
                 candidate = sj.get("full_url") or sj.get("short") or sj.get("url")
-                if isinstance(candidate, str) and candidate.startswith(f"{base_user}/{user_uuid}/"):
+                if isinstance(candidate, str) and candidate.startswith(
+                    f"{base_user}/{user_uuid}/"
+                ):
                     sub = candidate
 
         return sub, display_name, new_expiry_iso
+
 
 async def provision_subscription(
     telegram_id: int, username: Optional[str], plan: Plan
@@ -1410,7 +1444,9 @@ async def _handle_callback(cb: Dict[str, Any]):
             return await edit(T(lang, "links_empty"), kb_main(lang))
         sub = u["sub_url"]
         deeplink = deeplink_from_sub(sub, u.get("display_name") or BUSINESS_NAME)
-        upload, download, total, expire, web_url = await fetch_subscription_userinfo(sub)
+        upload, download, total, expire, web_url = await fetch_subscription_userinfo(
+            sub
+        )
         used = (upload or 0) + (download or 0)
         percent = round((used / total * 100), 1) if total and total > 0 else 0
         left = (total - used) if total else None

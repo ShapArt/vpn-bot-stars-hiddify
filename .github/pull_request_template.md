@@ -1,8 +1,8 @@
 ## What
-- 
+-
 
 ## Why
-- 
+-
 
 ## Checklist
 - [ ] Conventional commit title
