@@ -2,48 +2,25 @@
       <svg
         width="854"
         height="630"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        style="z-index:1;position:relative"
         viewBox="0 0 854 630"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <style>
-      .text {   font-size: 70px;   font-weight: 700;   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;  } .desc {   font-size: 28px;   font-weight: 500;   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;  } 
+      .text {   font-size: 70px;   font-weight: 700;   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;  } .desc {   font-size: 30px;   font-weight: 500;   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;  } 
       .text, .desc {   animation: fadeIn 1.2s ease-in-out forwards;  } @keyframes fadeIn {   from {     opacity: 0;   }   to {     opacity: 1;   }  } 
     </style>
-        <defs>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 854 630"
+        >
+          <defs>
               <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#0F172A"/><stop offset="100%" stop-color="#312E81"/>
+                <stop offset="0%" stop-color="#3F6212"/><stop offset="100%" stop-color="#22C55E"/>
               </linearGradient>
             </defs>
-        
-      <g transform="translate(427, 315) scale(1, 1) translate(-427, -315)">
-        <path d="" fill="url(#linear)" opacity="0.4" >
-          <animate
-              attributeName="d"
-              dur="20s"
-              repeatCount="indefinite"
-              keyTimes="0;0.333;0.667;1"
-              calcmod="spline"
-              keySplines="0.2 0 0.2 1;0.2 0 0.2 1;0.2 0 0.2 1"
-              begin="0s"
-              values="M0 0L 0 550Q 213.5 590 427 560T 854 585L 854 0 Z;M0 0L 0 575Q 213.5 590 427 570T 854 560L 854 0 Z;M0 0L 0 595Q 213.5 565 427 595T 854 560L 854 0 Z;M0 0L 0 550Q 213.5 590 427 560T 854 585L 854 0 Z">
-          </animate>
-        </path>
-        <path d="" fill="url(#linear)" opacity="0.4" >
-          <animate
-            attributeName="d"
-            dur="20s"
-            repeatCount="indefinite"
-            keyTimes="0;0.333;0.667;1"
-            calcmod="spline"
-            keySplines="0.2 0 0.2 1;0.2 0 0.2 1;0.2 0 0.2 1"
-            begin="-10s"
-            values="M0 0L 0 565Q 213.5 610 427 580T 854 590L 854 0 Z;M0 0L 0 580Q 213.5 550 427 550T 854 570L 854 0 Z;M0 0L 0 575Q 213.5 555 427 580T 854 595L 854 0 Z;M0 0L 0 565Q 213.5 610 427 580T 854 590L 854 0 Z">
-          </animate>
-        </path>
-      </g>
-         <text text-anchor="middle" alignment-baseline="middle" x="50%" y="38%" class="text" style="fill:#ffffff;" stroke="#none" stroke-width="1" >vpn-bot-stars-hiddify</text>
-        <text text-anchor="middle" alignment-baseline="middle" x="50%" y="58%" class="desc" style="fill:#ffffff;">Telegram subscription bot (Stars/XTR) for Hiddify/Xray access.</text>
+          <path fill="url(#linear)"  fill-opacity="1" d="m 0 0 l 0 630 l 854 0 l 0 -630 z"></path>
+        </svg>
+         <text text-anchor="middle" alignment-baseline="middle" x="50%" y="35%" class="text" style="fill:#ffffff;" stroke="#none" stroke-width="1" >vpn-bot-stars-hiddify</text>
+        <text text-anchor="middle" alignment-baseline="middle" x="50%" y="60%" class="desc" style="fill:#ffffff;">Автоматизация VPN-подписок и выдачи доступа</text>
       </svg>
     
