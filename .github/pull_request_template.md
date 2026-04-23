@@ -1,10 +1,9 @@
-## What
--
+## Summary
+- 
 
-## Why
--
+## Changes
+- 
 
-## Checklist
-- [ ] Conventional commit title
-- [ ] Tests/linters pass
-- [ ] Docs/README updated (if needed)
+## Verification
+- [ ] Local checks passed
+- [ ] Docs updated if needed
