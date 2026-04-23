@@ -1,27 +1,16 @@
-name: "🐞 Bug report"
-description: "Опиши проблему, чтобы мы быстро её починили"
-labels: ["bug"]
+name: Bug report
+about: Report reproducible problem
+labels: [bug]
 body:
   - type: textarea
-    id: what-happened
+    id: describe
     attributes:
-      label: Что произошло?
-      placeholder: Коротко, по делу
+      label: Problem description
+      description: What happened and what did you expect?
     validations:
       required: true
   - type: textarea
-    id: steps
+    id: repro
     attributes:
-      label: Шаги для воспроизведения
-      placeholder: 1) ... 2) ... 3) ...
-    validations:
-      required: true
-  - type: input
-    id: version
-    attributes:
-      label: Версия/коммит
-      placeholder: v0.1.0 или SHA
-  - type: textarea
-    id: extra
-    attributes:
-      label: Скрины/логи
+      label: Reproduction steps
+      description: Provide exact steps.
