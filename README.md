@@ -1,5 +1,8 @@
 # vpn-bot-stars-hiddify
 
+![Social Preview](https://raw.githubusercontent.com/ShapArt/vpn-bot-stars-hiddify/main/.github/social-preview.png)
+
+
 [![Stars](https://img.shields.io/github/stars/ShapArt/=for-the-badge)](https://github.com/ShapArt/vpn-bot-stars-hiddify/stargazers)
 [![Last Commit](https://img.shields.io/github/last-commit/ShapArt/=for-the-badge)](https://github.com/ShapArt/vpn-bot-stars-hiddify/commits/main)
 [![License](https://img.shields.io/github/license/ShapArt/=for-the-badge)](https://github.com/ShapArt/vpn-bot-stars-hiddify/blob/main/LICENSE)
@@ -37,3 +40,5 @@ See .github/CONTRIBUTING.md and open a focused PR.
 
 ## License / Лицензия
 See LICENSE.
+
+
