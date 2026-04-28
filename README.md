@@ -1,64 +1,108 @@
 # vpn-bot-stars-hiddify
 
-Telegram-first VPN subscription backend built around **payment -> provisioning -> delivery** as one coherent operator flow.
+Telegram-first VPN subscription backend built around a simple but operationally important promise: **a user pays, receives access, imports the profile, and starts using the service without falling into a support gap between billing and provisioning**.
+
+## Executive summary
+
+This project sits at the boundary between product delivery and backend operations. The core problem is not “how to send messages from a bot.” The real problem is stitching together a fragile multi-step flow — payment, provisioning, persistence, onboarding, and reminder handling — into something predictable enough to run as a small operator-facing service.
+
+The repository approaches that problem with a compact FastAPI application, environment-driven configuration, Telegram Bot API integration, Hiddify-oriented provisioning paths, and local SQLite state.
 
 ## Why this project exists
 
-VPN subscription bots often break at the seams: payment is handled in one place, provisioning in another, and client onboarding becomes a support burden after the sale.
+Many subscription-style bots fail at the handoff points:
 
-This repository is structured as a practical backend for that handoff. It combines Telegram bot flows, Hiddify provisioning, user profile delivery, and reminder logic in one service so the path from purchase to usable configuration stays short and predictable.
+- payment succeeds but access is not provisioned cleanly;
+- access exists but the user is not onboarded properly;
+- subscription links are delivered, but the import experience is unclear;
+- expiry and renewal handling become manual support work.
 
-## What it does
+This project exists to compress those failure points into one coherent backend flow.
+
+## What the system does
 
 The current implementation is centered around a FastAPI application that:
 
 - receives Telegram webhook updates;
 - exposes plan and purchase flows;
+- handles payment-related bot behavior;
 - provisions access through Hiddify-related integration paths;
 - stores user and order state in SQLite;
 - delivers subscription URLs, Hiddify deeplinks, and QR-based onboarding data;
-- keeps Russian-language bot guidance close to the actual operational flow;
-- runs reminder logic for expiring access.
+- keeps Russian-language guide content close to the actual user journey;
+- schedules reminder logic for expiring access.
 
-## Key capabilities
+## Product and engineering lens
 
-- **Telegram webhook backend** with explicit secret-based webhook validation
-- **Plan configuration from environment** rather than hardcoded pricing logic in multiple places
-- **Provisioning fallbacks** via panel API, external bridge, or command-based integration depending on deployment shape
-- **Profile delivery** in multiple formats: subscription URL, Hiddify deeplink, and QR where available
-- **Built-in guide content** for onboarding users across mobile and desktop clients
-- **Expiry reminders and suspension-oriented scheduling** driven by cron-like configuration
+This repository is interesting because it combines **user lifecycle logic** with **ops-facing backend behavior**.
+
+The code is not only about chat UX. It also has to answer questions such as:
+
+- where subscription state lives;
+- how payment completion maps to provisioning;
+- what happens when one integration path is unavailable;
+- how onboarding output is delivered in a usable format;
+- how expiry reminders stay configurable without turning into hardcoded behavior.
 
 ## Architecture overview
-
-The repository is intentionally simple and direct.
 
 ### Runtime shape
 
 - **Application entrypoint:** `app/main.py`
 - **HTTP framework:** FastAPI
 - **HTTP client:** `httpx`
-- **Storage:** SQLite
-- **Scheduling:** APScheduler (optional import path, enabled by environment)
-- **Configuration:** `.env` / `.env.example`
+- **Persistence:** SQLite
+- **Scheduling:** APScheduler (optional import path)
+- **Configuration:** environment variables via `.env` / `.env.example`
 
-### Integration boundaries
+### External boundaries
 
-- **Telegram Bot API** for updates, messaging, invoices, and profile delivery
-- **Hiddify panel / bridge / provision command** for access creation and subscription management
-- **Local SQLite state** for users, orders, and reminder markers
+- **Telegram Bot API** for updates, messaging, invoices, and delivery
+- **Hiddify panel / bridge / provision command** for provisioning and subscription handling
+- **Local file-backed database** for user, order, and reminder state
 
-### Current design trade-off
+### Internal flow model
 
-Most of the operational logic lives in `app/main.py`. That keeps the deployment footprint small and the flow easy to trace, but it also makes the file load-bearing. The repository currently favors directness and operational continuity over an early multi-module rewrite.
+A simplified runtime flow looks like this:
 
-## Technical highlights
+1. Telegram delivers an update.
+2. The backend validates and routes the webhook payload.
+3. The user enters or completes a plan/payment path.
+4. The provisioning layer resolves the configured Hiddify integration path.
+5. Local state is persisted.
+6. The bot returns onboarding-ready artifacts to the user.
+7. Scheduler logic later handles reminder windows and expiry-related follow-up.
 
-- Startup fails fast when required secrets such as `TELEGRAM_BOT_TOKEN` or `TELEGRAM_WEBHOOK_SECRET` are missing
-- Provisioning is treated as a guarded path, not as a best-effort side effect
-- User-facing copy is kept close to the runtime behavior, which helps avoid drift between docs and bot output
-- Reminder behavior is configurable through environment variables rather than buried in code-only constants
-- The data model is intentionally narrow: users, orders, and reminder markers cover the main operational state
+## Key capabilities
+
+- **Webhook-driven bot backend** with explicit secret-based validation
+- **Environment-driven plan configuration** instead of duplicating tariff logic across the codebase
+- **Provisioning fallback paths** via panel API, bridge service, or command-based integration depending on deployment shape
+- **Multi-format onboarding delivery** through subscription URL, Hiddify deeplink, and QR output when available
+- **Guide content kept near runtime logic**, reducing drift between documentation and real bot behavior
+- **Reminder scheduling** configurable through cron-like environment settings
+
+## Technical decisions worth highlighting
+
+### 1. Compact single-service design
+
+Most of the operational behavior lives in `app/main.py`.
+
+That is a conscious trade-off. It reduces file sprawl and keeps the payment-to-provisioning path easy to trace, but it also makes the file load-bearing. For a small self-hosted service, this is a pragmatic choice; for a larger deployment, modularization would become the next structural step.
+
+### 2. Narrow data model
+
+The repository keeps state focused on the operational minimum: users, orders, and reminder markers.
+
+That is useful because the system is not trying to become a full billing platform. It is trying to keep the delivery flow reliable.
+
+### 3. Configuration over branching sprawl
+
+The runtime behavior is environment-driven. This is particularly important in a project where the actual deployment shape can vary depending on which Hiddify integration path is available.
+
+### 4. Delivery-oriented output
+
+The repository does not stop at “provision access.” It explicitly treats deeplinks, subscription URLs, and QR output as part of the backend responsibility because onboarding failure is still delivery failure.
 
 ## Repository structure
 
@@ -72,7 +116,7 @@ vpn-bot-stars-hiddify/
   README.md
 ```
 
-## Quick start
+## Local setup
 
 Create a virtual environment and install dependencies:
 
@@ -90,9 +134,7 @@ uvicorn app.main:app --reload --port 8000
 
 ## Configuration
 
-Environment variables define the runtime behavior.
-
-Notable settings include:
+Important runtime settings include:
 
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_WEBHOOK_SECRET`
@@ -108,38 +150,49 @@ Notable settings include:
 
 See `.env.example` for the current baseline.
 
-## Example workflow
+## Example usage flow
 
-1. A user opens the bot and selects a plan.
-2. Telegram payment flow completes.
-3. The backend provisions or refreshes access through the configured Hiddify integration path.
-4. The bot stores local state in SQLite.
-5. The user receives onboarding-ready profile data: subscription URL, Hiddify deeplink, and optional QR.
-6. Reminder logic later checks expiry windows and notifies users according to the configured schedule.
+1. A user opens the bot.
+2. The bot presents available plans.
+3. The Telegram payment flow completes.
+4. The backend provisions or refreshes access through the configured Hiddify integration path.
+5. The application persists user/order state.
+6. The bot returns onboarding-ready artifacts to the user.
+7. Reminder logic checks future expiry windows and sends notifications according to schedule.
 
-## Operational notes
+## Operational considerations
 
-- The repo is **environment-driven** and depends on external Hiddify infrastructure to be genuinely useful
-- Russian UX copy is the default user-facing language in the current codebase
-- The provisioning and billing path is load-bearing and should be changed carefully
-- There is no documented repo-wide lint or typecheck command in the current repository instructions
+- The service is **environment-driven** and depends on external Hiddify infrastructure to be genuinely useful
+- Russian UX copy is the default user-facing language in the current implementation
+- The payment and provisioning path is load-bearing and should be changed carefully
+- There is no documented repo-wide lint or typecheck command in the current instructions
 
 ## Constraints and trade-offs
 
-- The application is compact, but that compactness makes `app/main.py` central and easy to destabilize
-- SQLite is appropriate for a small self-hosted workflow, but it is still a local file database with obvious operational limits
-- Provisioning behavior depends on external systems and credentials, so this repository is not a standalone demo without deployment context
-- The repo is optimized around getting a working operator flow, not around presenting a fully abstracted library
+- The compact application structure makes the runtime path easy to follow, but also makes `app/main.py` central and easy to destabilize
+- SQLite is a reasonable fit for a small self-hosted operator workflow, but it remains a local file-backed database with obvious scaling and operational trade-offs
+- Provisioning behavior depends on external systems and credentials, so the repository is not a standalone demo in isolation
+- The project is intentionally delivery-oriented rather than over-abstracted into a framework or library
 
-## Where this repo fits in a portfolio
+## Why this repo is strong in a portfolio
 
-This project is a good example of **applied backend engineering around real delivery flow boundaries**:
+This is a good example of **applied backend engineering around real delivery boundaries**:
 
 - external API integration
 - webhook handling
-- stateful user lifecycle logic
-- operator-friendly onboarding output
+- stateful lifecycle logic
+- onboarding-aware output design
 - configuration-heavy deployment behavior
+- small-service pragmatism
+
+It shows the kind of engineering work that matters in real small systems: not theoretical scale, but correctly joining the steps where users and operators usually get hurt.
+
+## Good next additions for portfolio depth
+
+- a simple architecture diagram
+- one end-to-end payment/provisioning flow diagram
+- a screenshot set for the bot onboarding path
+- one short section describing failure handling for provisioning fallbacks
 
 ## License
 
